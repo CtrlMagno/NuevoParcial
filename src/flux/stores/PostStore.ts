@@ -32,7 +32,6 @@ class PostStore extends Store {
     currentPost: null
   };
 
-  // Getters públicos
   getAllPosts(): Post[] {
     return this.state.posts;
   }
@@ -57,7 +56,6 @@ class PostStore extends Store {
     return this.state.posts.filter(post => post.userId === userId);
   }
 
-  // Manejo de acciones
   protected handleAction(action: Action): void {
     switch (action.type) {
       case PostActionTypes.LOAD_POSTS_REQUEST:
@@ -235,6 +233,5 @@ class PostStore extends Store {
   }
 }
 
-// Instancia singleton del store
 export const postStore = new PostStore();
 export default postStore; 

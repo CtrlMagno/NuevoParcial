@@ -4,11 +4,9 @@ import { setupNavigationButtons, addButtonHoverEffects } from '../../utils/navig
 import { authStore, AuthActions } from '../../flux';
 import { CreateUserData } from '../../types/User';
 
-// Funcionalidad específica de la página signup
 document.addEventListener('DOMContentLoaded', () => {
     console.log('Signup page loaded successfully');
     
-    // Configurar imágenes dinámicamente
     const logo = document.querySelector('.Logo') as HTMLImageElement;
     if (logo) {
         logo.src = '/assets/imgs/logo/LogoHiFiaca Ajustado No Fondo.png';
@@ -19,20 +17,14 @@ document.addEventListener('DOMContentLoaded', () => {
         circle.src = '/assets/imgs/logo/Circulos sin fondo.png';
     });
 
-    // Configurar el formulario de signup
     setupSignupForm();
     
-    // Configurar navegación automática
     setupNavigationButtons();
     
-    // Agregar efectos visuales a los botones
     addButtonHoverEffects('.ButtonContainer');
 
-    // Listener para cambios en el store de autenticación
     authStore.addChangeListener(handleAuthChange);
     
-    // No inicializar Firebase Auth listener automáticamente en signup
-    // para evitar redirecciones automáticas no deseadas
 });
 
 function setupSignupForm(): void {
@@ -49,11 +41,9 @@ function setupSignupForm(): void {
         return;
     }
 
-    // Prevenir navegación automática del enlace
     signupLink.href = '#';
     signupLink.onclick = (e) => e.preventDefault();
 
-    // Manejar el submit del formulario
     const handleSignup = async (e: Event) => {
         e.preventDefault();
         
@@ -63,7 +53,6 @@ function setupSignupForm(): void {
         const password = passwordInput.value.trim();
         const confirmPassword = confirmPasswordInput.value.trim();
 
-        // Validación completa
         const validationError = validateSignupForm({
             username,
             fullName,
@@ -77,7 +66,6 @@ function setupSignupForm(): void {
             return;
         }
 
-        // Deshabilitar el botón mientras se procesa
         signupButton.disabled = true;
         signupButton.textContent = 'Creando cuenta...';
 
@@ -95,10 +83,8 @@ function setupSignupForm(): void {
         }
     };
 
-    // Event listeners
     signupButton.addEventListener('click', handleSignup);
     
-    // Permitir signup con Enter en cualquier input
     [usernameInput, fullNameInput, emailInput, passwordInput, confirmPasswordInput].forEach(input => {
         input.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
@@ -107,7 +93,6 @@ function setupSignupForm(): void {
         });
     });
 
-    // Validación en tiempo real de confirmación de password
     confirmPasswordInput.addEventListener('input', () => {
         if (confirmPasswordInput.value && passwordInput.value !== confirmPasswordInput.value) {
             confirmPasswordInput.style.borderColor = '#E22134';
@@ -126,12 +111,10 @@ function validateSignupForm(data: {
 }): string | null {
     const { username, email, password, confirmPassword } = data;
 
-    // Campos requeridos
     if (!username || !email || !password || !confirmPassword) {
         return 'Por favor, completa todos los campos obligatorios';
     }
 
-    // Validar username
     if (username.length < 3) {
         return 'El nombre de usuario debe tener al menos 3 caracteres';
     }
@@ -140,17 +123,14 @@ function validateSignupForm(data: {
         return 'El nombre de usuario solo puede contener letras, números y guiones bajos';
     }
 
-    // Validar email
     if (!isValidEmail(email)) {
         return 'Por favor, ingresa un email válido';
     }
 
-    // Validar password
     if (password.length < 6) {
         return 'La contraseña debe tener al menos 6 caracteres';
     }
 
-    // Validar confirmación de password
     if (password !== confirmPassword) {
         return 'Las contraseñas no coinciden';
     }
@@ -164,23 +144,20 @@ function handleAuthChange(): void {
     if (authStore.isLoading()) {
         signupButton.disabled = true;
         signupButton.textContent = 'Creando cuenta...';
-        clearErrorUI(); // Solo limpiar UI, no hacer dispatch
+        clearErrorUI();
     } else {
         signupButton.disabled = false;
         signupButton.textContent = 'Crear Cuenta';
         
         if (authStore.isAuthenticated()) {
-            // Signup exitoso - navegar a home
             console.log('Cuenta creada exitosamente, redirigiendo...');
             showSuccess('¡Cuenta creada exitosamente! Redirigiendo...');
             setTimeout(() => {
                 window.location.href = 'home.html';
             }, 2000);
         } else if (authStore.getError()) {
-            // Mostrar error
             let errorMessage = authStore.getError() || 'Error desconocido';
             
-            // Personalizar mensajes de error de Firebase
             if (errorMessage.includes('email-already-in-use')) {
                 errorMessage = 'Este email ya está registrado. ¿Quieres iniciar sesión?';
             } else if (errorMessage.includes('weak-password')) {
@@ -195,7 +172,7 @@ function handleAuthChange(): void {
 }
 
 function showError(message: string): void {
-    clearErrorUI(); // Solo limpiar UI, no hacer dispatch
+    clearErrorUI();
     
     const container = document.querySelector('.InputContainer') as HTMLElement;
     if (!container) return;
@@ -217,12 +194,11 @@ function showError(message: string): void {
 
     container.appendChild(errorDiv);
 
-    // Auto-limpiar error después de 7 segundos (solo UI)
     setTimeout(clearErrorUI, 7000);
 }
 
 function showSuccess(message: string): void {
-    clearErrorUI(); // Solo limpiar UI, no hacer dispatch
+    clearErrorUI();
     
     const container = document.querySelector('.InputContainer') as HTMLElement;
     if (!container) return;
@@ -262,12 +238,10 @@ function isValidEmail(email: string): boolean {
     return emailRegex.test(email);
 }
 
-// Limpiar listeners cuando la página se descarga
 window.addEventListener('beforeunload', () => {
     authStore.removeChangeListener(handleAuthChange);
 });
 
-// Agregar estilos de animación
 const style = document.createElement('style');
 style.textContent = `
     @keyframes slideDown {

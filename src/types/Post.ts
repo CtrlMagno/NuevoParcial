@@ -14,35 +14,35 @@ export interface Music {
 export interface Comment {
   id: string;
   userId: string;
-  user?: User; // Opcional para cuando se carga desde Firebase
+  user?: User; 
   content: string;
-  createdAt: string; // ISO string para compatibilidad con Firebase
+  createdAt: string; 
 }
 
 export interface Post {
   id: string;
   userId: string;
-  user?: User; // Opcional para cuando se carga desde Firebase
+  user?: User; 
   content: string;
-  imageUrl?: string; // Para imágenes del post
-  musicTrack?: MusicTrack; // Nueva integración con Deezer
-  music?: Music; // Mantener para compatibilidad
-  musicUrl?: string; // URL directa de la música (para Deezer/Spotify)
-  musicTitle?: string; // Título de la canción
-  musicArtist?: string; // Artista de la canción
-  createdAt: string; // ISO string para compatibilidad con Firebase
-  updatedAt: string; // ISO string para compatibilidad con Firebase
+  imageUrl?: string; 
+  musicTrack?: MusicTrack; 
+  music?: Music;
+  musicUrl?: string;
+  musicTitle?: string;
+  musicArtist?: string;
+  createdAt: string;
+  updatedAt: string;
   likesCount: number;
   commentsCount: number;
   comments: Comment[];
-  likedBy: string[]; // Array de user IDs que han dado like
-  isLiked?: boolean; // Si el usuario actual ha dado like
+  likedBy: string[];
+  isLiked?: boolean;
 }
 
 export interface CreatePostData {
   content: string;
   imageUrl?: string;
-  musicTrack?: MusicTrack; // Nueva integración con Deezer
+  musicTrack?: MusicTrack;
   musicId?: string;
   musicUrl?: string;
   musicTitle?: string;

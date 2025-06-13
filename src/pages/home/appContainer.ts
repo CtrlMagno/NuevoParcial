@@ -12,11 +12,9 @@ class AppContainer extends HTMLElement {
     }
 
     disconnectedCallback(): void {
-        // Limpiar el modal del document.body cuando el componente se desconecta
         const modal = document.querySelector('comment-modal');
         if (modal) {
             modal.remove();
-            console.log('Modal de comentarios removido del DOM');
         }
     }
 
@@ -28,14 +26,12 @@ class AppContainer extends HTMLElement {
     }
 
     private setupCommentModal(): void {
-        // Agregar el modal directamente al document.body
         if (!document.querySelector('comment-modal')) {
             const modal = document.createElement('comment-modal');
             document.body.appendChild(modal);
             console.log('Modal de comentarios agregado al document.body');
         }
         
-        // Debug: verificar que el modal se agregó al DOM
         setTimeout(() => {
             const modal = document.querySelector('comment-modal');
             console.log('Modal en DOM después del render:', modal);
@@ -43,15 +39,15 @@ class AppContainer extends HTMLElement {
     }
 
     private async initializeAuth(): Promise<void> {
-        // Inicializar Firebase Auth listener
+
         AuthActions.initializeAuthListener();
         
-        // Escuchar cambios en el AuthStore
+
         authStore.addChangeListener(() => {
             this.checkAuthentication();
         });
         
-        // Dar tiempo a Firebase para verificar el estado
+
         setTimeout(() => {
             this.checkAuthentication();
         }, 1000);
@@ -65,7 +61,7 @@ class AppContainer extends HTMLElement {
         
         if (!isAuthenticated || !currentUser) {
             console.log('Usuario no autenticado, esperando sincronización con Firebase...');
-            // Esperamos un poco más para la sincronización con Firebase
+
             setTimeout(() => {
                 if (!authStore.isAuthenticated()) {
                     console.log('Sin autenticación confirmada, redirigiendo al login...');
@@ -74,7 +70,6 @@ class AppContainer extends HTMLElement {
             }, 2000);
         } else {
             console.log('Usuario autenticado:', currentUser.username || currentUser.email);
-            // Usuario autenticado, todo bien
         }
     }
 
@@ -86,9 +81,8 @@ class AppContainer extends HTMLElement {
         }
 
         logoutBtn.addEventListener('click', async (e) => {
-            e.preventDefault(); // Prevenir navegación del enlace
+            e.preventDefault();
             
-            // Confirmar logout
             const confirmLogout = confirm('¿Estás seguro de que quieres cerrar sesión?');
             if (!confirmLogout) {
                 return;
@@ -97,7 +91,7 @@ class AppContainer extends HTMLElement {
             try {
                 console.log('Iniciando logout...');
                 
-                // Mostrar indicador de carga
+
                 const icon = logoutBtn.querySelector('img');
                 const originalSrc = icon?.getAttribute('src');
                 if (icon) {
@@ -105,13 +99,13 @@ class AppContainer extends HTMLElement {
                     logoutBtn.style.pointerEvents = 'none';
                 }
 
-                // Ejecutar logout
+
                 await AuthActions.logout();
 
-                // Mostrar mensaje de éxito
+
                 console.log('Logout exitoso, redirigiendo...');
                 
-                // Pequeña pausa para mostrar el feedback
+
                 setTimeout(() => {
                     window.location.href = 'login.html';
                 }, 500);
@@ -119,7 +113,7 @@ class AppContainer extends HTMLElement {
             } catch (error) {
                 console.error('Error durante logout:', error);
                 
-                // Restaurar botón en caso de error
+
                 const icon = logoutBtn.querySelector('img') as HTMLImageElement;
                 if (icon) {
                     icon.style.opacity = '1';
@@ -130,7 +124,7 @@ class AppContainer extends HTMLElement {
             }
         });
 
-        // Efecto hover para mejor UX
+
         logoutBtn.addEventListener('mouseenter', () => {
             const icon = logoutBtn.querySelector('img') as HTMLImageElement;
             if (icon) {

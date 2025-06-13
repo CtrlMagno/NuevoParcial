@@ -14,7 +14,6 @@ import { getAvatarUrl } from '../utils/cssLoader';
 
 export class AuthService {
   
-  // Convertir Firebase User a nuestro tipo User
   private mapFirebaseUserToUser(firebaseUser: FirebaseUser, additionalData?: any): User {
     const rawAvatar = additionalData?.avatar || firebaseUser.photoURL || '';
     
@@ -23,7 +22,7 @@ export class AuthService {
       email: firebaseUser.email || '',
       username: additionalData?.username || firebaseUser.displayName || '',
       fullName: additionalData?.fullName || firebaseUser.displayName || '',
-      avatar: getAvatarUrl(rawAvatar), // ✅ Usar getAvatarUrl para garantizar avatar válido
+      avatar: getAvatarUrl(rawAvatar),
       bio: additionalData?.bio || '',
       location: additionalData?.location || '',
       website: additionalData?.website || '',
@@ -34,13 +33,11 @@ export class AuthService {
     };
   }
 
-  // Login con email y password
   async login(loginData: LoginData): Promise<{ user: User; token: string }> {
     try {
       const userCredential = await signInWithEmailAndPassword(auth, loginData.email, loginData.password);
       const firebaseUser = userCredential.user;
       
-      // Obtener datos adicionales del usuario desde Firestore
       const userDoc = await getDoc(doc(db, 'users', firebaseUser.uid));
       const userData = userDoc.exists() ? userDoc.data() : {};
       
@@ -53,18 +50,15 @@ export class AuthService {
     }
   }
 
-  // Registro de nuevo usuario
   async signup(signupData: CreateUserData): Promise<{ user: User; token: string }> {
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, signupData.email, signupData.password);
       const firebaseUser = userCredential.user;
       
-      // Actualizar el perfil de Firebase
       await updateProfile(firebaseUser, {
         displayName: signupData.username
       });
 
-      // Crear documento del usuario en Firestore
       const userData = {
         username: signupData.username,
         fullName: signupData.fullName || signupData.username,
@@ -72,7 +66,7 @@ export class AuthService {
         bio: '',
         location: '',
         website: '',
-        avatar: '/imgs/logo/default-user-avatar.png', // ✅ Establecer avatar por defecto
+        avatar: '/imgs/logo/default-user-avatar.png',
         joinDate: new Date().toISOString(),
         followersCount: 0,
         followingCount: 0,
@@ -90,7 +84,6 @@ export class AuthService {
     }
   }
 
-  // Logout
   async logout(): Promise<void> {
     try {
       await signOut(auth);
@@ -99,28 +92,27 @@ export class AuthService {
     }
   }
 
-  // Observar cambios en el estado de autenticación
+
   onAuthStateChanged(callback: (user: User | null) => void): () => void {
     return onAuthStateChanged(auth, async (firebaseUser) => {
       if (firebaseUser) {
-        // Usuario logueado
         const userDoc = await getDoc(doc(db, 'users', firebaseUser.uid));
         const userData = userDoc.exists() ? userDoc.data() : {};
         const user = this.mapFirebaseUserToUser(firebaseUser, userData);
         callback(user);
       } else {
-        // Usuario no logueado
+
         callback(null);
       }
     });
   }
 
-  // Obtener el usuario actual
+
   getCurrentUser(): FirebaseUser | null {
     return auth.currentUser;
   }
 
-  // Obtener el token del usuario actual
+
   async getCurrentToken(): Promise<string | null> {
     const user = auth.currentUser;
     if (user) {
@@ -129,13 +121,13 @@ export class AuthService {
     return null;
   }
 
-  // Actualizar perfil del usuario
+
   async updateUserProfile(userId: string, updates: Partial<User>): Promise<User> {
     try {
-      // Actualizar en Firestore
++
       await setDoc(doc(db, 'users', userId), updates, { merge: true });
       
-      // Obtener los datos actualizados
+
       const userDoc = await getDoc(doc(db, 'users', userId));
       const userData = userDoc.data();
       
@@ -149,15 +141,15 @@ export class AuthService {
     }
   }
 
-  // Función alias para el modal
+
   async updateProfile(userId: string, updates: Partial<User>): Promise<User> {
     return this.updateUserProfile(userId, updates);
   }
 
-  // Subir imagen de perfil
+
   async uploadProfileImage(file: File, userId: string): Promise<string> {
     try {
-      // Validar archivo
+
       if (!file.type.startsWith('image/')) {
         throw new Error('El archivo debe ser una imagen');
       }
@@ -166,15 +158,12 @@ export class AuthService {
         throw new Error('La imagen no puede ser mayor a 5MB');
       }
 
-      // Crear referencia única para la imagen
       const fileName = `profiles/${userId}/${Date.now()}_${file.name}`;
       const imageRef = ref(storage, fileName);
       
-      // Subir archivo
       console.log('Subiendo imagen a Firebase Storage...');
       const snapshot = await uploadBytes(imageRef, file);
       
-      // Obtener URL de descarga
       const downloadURL = await getDownloadURL(snapshot.ref);
       console.log('Imagen subida exitosamente:', downloadURL);
       
@@ -185,6 +174,5 @@ export class AuthService {
   }
 }
 
-// Instancia singleton
 export const authService = new AuthService();
 export default authService; 

@@ -1,8 +1,4 @@
-/**
- * Utilidad para cargar CSS en componentes Shadow DOM
- */
 
-// CSS content para cada componente
 const componentStyles: { [key: string]: string } = {
 
   
@@ -2643,10 +2639,8 @@ export const injectCSS = (shadowRoot: ShadowRoot, componentName: string): void =
  * Función auxiliar para obtener la URL del avatar con fallback
  */
 export const getAvatarUrl = (avatarUrl?: string | null): string => {
-  // Verificar si el avatar existe y no está vacío
   if (avatarUrl && avatarUrl.trim() !== '') {
     return avatarUrl;
   }
-  // Devolver imagen por defecto si no hay avatar válido
   return '/imgs/logo/default-user-avatar.png';
 };

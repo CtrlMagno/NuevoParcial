@@ -33,16 +33,14 @@ class AuthStore extends Store {
 
   constructor() {
     super();
-    // Verificar si hay un token guardado al inicializar
     if (this.state.token) {
       this.validateToken();
     }
     
-    // El listener de Firebase Auth se inicializará manualmente desde las páginas
-    // para evitar problemas de dispatch anidado
+
   }
 
-  // Getters públicos
+
   getCurrentUser(): User | null {
     return this.state.currentUser;
   }
@@ -63,7 +61,7 @@ class AuthStore extends Store {
     return this.state.token;
   }
 
-  // Manejo de acciones
+
   protected handleAction(action: Action): void {
     switch (action.type) {
       case AuthActionTypes.LOGIN_REQUEST:
@@ -103,7 +101,7 @@ class AuthStore extends Store {
         break;
       
       default:
-        // No hacer nada para acciones no reconocidas
+
         break;
     }
   }
@@ -120,7 +118,7 @@ class AuthStore extends Store {
   private handleLoginSuccess(payload: { user: User; token: string }): void {
     const { user, token } = payload;
     
-    // Guardar token en localStorage
+
     localStorage.setItem('authToken', token);
     
     this.state = {
@@ -158,7 +156,6 @@ class AuthStore extends Store {
   private handleSignupSuccess(payload: { user: User; token: string }): void {
     const { user, token } = payload;
     
-    // Guardar token en localStorage
     localStorage.setItem('authToken', token);
     
     this.state = {
@@ -185,7 +182,6 @@ class AuthStore extends Store {
   }
 
   private handleLogout(): void {
-    // Remover token del localStorage
     localStorage.removeItem('authToken');
     
     this.state = {
@@ -219,14 +215,11 @@ class AuthStore extends Store {
     try {
       console.log('Validating token...');
       
-      // Importar Firebase Auth dinámicamente para evitar problemas de dependencias
       const { auth } = await import('../../services/firebase');
       const { onAuthStateChanged } = await import('firebase/auth');
       
-      // Verificar estado de autenticación con Firebase
       onAuthStateChanged(auth, async (firebaseUser) => {
         if (firebaseUser) {
-          // Usuario está autenticado en Firebase
           try {
             const { getDoc, doc } = await import('firebase/firestore');
             const { db } = await import('../../services/firebase');
@@ -265,7 +258,6 @@ class AuthStore extends Store {
             this.handleLogout();
           }
         } else {
-          // Usuario no está autenticado en Firebase
           this.handleLogout();
         }
       });
@@ -277,6 +269,5 @@ class AuthStore extends Store {
   }
 }
 
-// Instancia singleton del store
 export const authStore = new AuthStore();
 export default authStore; 

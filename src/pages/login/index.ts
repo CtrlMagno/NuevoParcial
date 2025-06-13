@@ -4,11 +4,9 @@ import { setupNavigationButtons, addButtonHoverEffects } from '../../utils/navig
 import { authStore, AuthActions } from '../../flux';
 import { LoginData } from '../../types/User';
 
-// Funcionalidad específica de la página login
 document.addEventListener('DOMContentLoaded', () => {
     console.log('Login page loaded successfully');
     
-    // Configurar imágenes dinámicamente
     const logo = document.querySelector('.Logo') as HTMLImageElement;
     if (logo) {
         logo.src = '/assets/imgs/logo/LogoHiFiaca Ajustado No Fondo.png';
@@ -19,20 +17,15 @@ document.addEventListener('DOMContentLoaded', () => {
         circle.src = '/assets/imgs/logo/Circulos sin fondo.png';
     });
 
-    // Configurar el formulario de login
     setupLoginForm();
     
-    // Configurar navegación automática
     setupNavigationButtons();
     
-    // Agregar efectos visuales a los botones
     addButtonHoverEffects('.ButtonContainer');
 
-    // Listener para cambios en el store de autenticación
     authStore.addChangeListener(handleAuthChange);
     
-    // No inicializar Firebase Auth listener automáticamente en login
-    // para evitar redirecciones automáticas no deseadas
+
 });
 
 function setupLoginForm(): void {
@@ -46,23 +39,19 @@ function setupLoginForm(): void {
         return;
     }
 
-    // Actualizar placeholders para mejor UX
     usernameInput.placeholder = 'Email';
     usernameInput.type = 'email';
     passwordInput.placeholder = 'Contraseña';
 
-    // Prevenir navegación automática del enlace
     loginLink.href = '#';
     loginLink.onclick = (e) => e.preventDefault();
 
-    // Manejar el submit del formulario
     const handleLogin = async (e: Event) => {
         e.preventDefault();
         
         const email = usernameInput.value.trim();
         const password = passwordInput.value.trim();
 
-        // Validación básica
         if (!email || !password) {
             showError('Por favor, completa todos los campos');
             return;
@@ -73,7 +62,6 @@ function setupLoginForm(): void {
             return;
         }
 
-        // Deshabilitar el botón mientras se procesa
         loginButton.disabled = true;
         loginButton.textContent = 'Ingresando...';
 
@@ -86,10 +74,8 @@ function setupLoginForm(): void {
         }
     };
 
-    // Event listeners
     loginButton.addEventListener('click', handleLogin);
     
-    // Permitir login con Enter
     [usernameInput, passwordInput].forEach(input => {
         input.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
@@ -105,24 +91,22 @@ function handleAuthChange(): void {
     if (authStore.isLoading()) {
         loginButton.disabled = true;
         loginButton.textContent = 'Ingresando...';
-        clearErrorUI(); // Solo limpiar UI, no hacer dispatch
+        clearErrorUI();
     } else {
         loginButton.disabled = false;
         loginButton.textContent = 'Log In';
         
         if (authStore.isAuthenticated()) {
-            // Login exitoso - navegar a home
-            console.log('Login exitoso, redirigiendo...');
++            console.log('Login exitoso, redirigiendo...');
             window.location.href = 'home.html';
         } else if (authStore.getError()) {
-            // Mostrar error
             showError(authStore.getError() || 'Error desconocido');
         }
     }
 }
 
 function showError(message: string): void {
-    clearErrorUI(); // Solo limpiar UI, no hacer dispatch
+    clearErrorUI();
     
     const container = document.querySelector('.InputContainer') as HTMLElement;
     if (!container) return;
@@ -143,7 +127,7 @@ function showError(message: string): void {
 
     container.appendChild(errorDiv);
 
-    // Auto-limpiar error después de 5 segundos (solo UI)
+    
     setTimeout(clearErrorUI, 5000);
 }
 
@@ -164,7 +148,7 @@ function isValidEmail(email: string): boolean {
     return emailRegex.test(email);
 }
 
-// Limpiar listeners cuando la página se descarga
+
 window.addEventListener('beforeunload', () => {
     authStore.removeChangeListener(handleAuthChange);
 });

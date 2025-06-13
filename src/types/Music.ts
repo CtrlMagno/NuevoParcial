@@ -49,7 +49,6 @@ export interface DeezerSearchResponse {
   prev?: string;
 }
 
-// Tipos simplificados para usar en nuestros posts
 export interface MusicTrack {
   id: string; // Deezer track ID
   title: string;
@@ -61,7 +60,6 @@ export interface MusicTrack {
   deezerUrl?: string; // URL completa en Deezer
 }
 
-// Estados del reproductor
 export interface AudioPlayerState {
   currentTrack: MusicTrack | null;
   isPlaying: boolean;

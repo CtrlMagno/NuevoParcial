@@ -3,19 +3,18 @@ export interface User {
   username: string;
   email: string;
   fullName?: string;
-  avatar?: string; // URL de la imagen de perfil
+  avatar?: string;
   bio?: string;
   location?: string;
   website?: string;
-  joinDate?: string; // ISO string para compatibilidad con Firebase
+  joinDate?: string;
   followersCount: number;
   followingCount: number;
   postsCount: number;
   isVerified?: boolean;
-  // Mantener para compatibilidad con código existente
   profileImage?: string;
-  createdAt?: string; // ISO string para compatibilidad con Firebase
-  updatedAt?: string; // ISO string para compatibilidad con Firebase
+  createdAt?: string;
+  updatedAt?: string; 
 }
 
 export interface CreateUserData {

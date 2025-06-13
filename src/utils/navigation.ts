@@ -26,7 +26,6 @@ export const navigateToPage = (pageName: string, delay: number = 0): void => {
 };
 
 export const setupNavigationButtons = (): void => {
-  // Configurar botones de navegación con clases específicas
   const navButtons = document.querySelectorAll('[data-navigate]');
   
   navButtons.forEach(button => {
@@ -40,7 +39,7 @@ export const setupNavigationButtons = (): void => {
     }
   });
 
-  // Manejar enlaces tradicionales como fallback
+
   const navLinks = document.querySelectorAll('a[href$=".html"]');
   navLinks.forEach(link => {
     link.addEventListener('click', (e) => {

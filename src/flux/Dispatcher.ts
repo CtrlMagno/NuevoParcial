@@ -108,6 +108,5 @@ class Dispatcher {
   }
 }
 
-// Instancia singleton del dispatcher
 export const AppDispatcher = new Dispatcher();
 export default AppDispatcher;
